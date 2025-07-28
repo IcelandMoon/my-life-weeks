@@ -113,7 +113,7 @@ export default function WeeksOfLife() {
   const [birthdate, setBirthdate] = useState('');
   const [name, setName] = useState('');
   const [expectedLifespan, setExpectedLifespan] = useState(80);
-  const [selectedTheme, setSelectedTheme] = useState('grid');
+  const [selectedTheme, setSelectedTheme] = useState('flowers');
   const [selectedLanguage, setSelectedLanguage] = useState('ko-KR');
   const [stats, setStats] = useState(null);
   const [showHoverData, setShowHoverData] = useState(false);
@@ -126,53 +126,83 @@ export default function WeeksOfLife() {
     { code: 'es-ES', name: 'Español', flag: '🇪🇸' }
   ];
 
+  const getZodiacSign = (birthDate) => {
+    const month = birthDate.getMonth() + 1;
+    const day = birthDate.getDate();
+    
+    const zodiacSigns = [
+      { name: '물병자리', symbol: '♒', color: '#00bcd4', months: [[1, 20, 31], [2, 1, 18]] },
+      { name: '물고기자리', symbol: '♓', color: '#9c27b0', months: [[2, 19, 29], [3, 1, 20]] },
+      { name: '양자리', symbol: '♈', color: '#f44336', months: [[3, 21, 31], [4, 1, 19]] },
+      { name: '황소자리', symbol: '♉', color: '#4caf50', months: [[4, 20, 30], [5, 1, 20]] },
+      { name: '쌍둥이자리', symbol: '♊', color: '#ffeb3b', months: [[5, 21, 31], [6, 1, 20]] },
+      { name: '게자리', symbol: '♋', color: '#2196f3', months: [[6, 21, 30], [7, 1, 22]] },
+      { name: '사자자리', symbol: '♌', color: '#ff9800', months: [[7, 23, 31], [8, 1, 22]] },
+      { name: '처녀자리', symbol: '♍', color: '#795548', months: [[8, 23, 31], [9, 1, 22]] },
+      { name: '천칭자리', symbol: '♎', color: '#e91e63', months: [[9, 23, 30], [10, 1, 22]] },
+      { name: '전갈자리', symbol: '♏', color: '#9e0000', months: [[10, 23, 31], [11, 1, 21]] },
+      { name: '사수자리', symbol: '♐', color: '#673ab7', months: [[11, 22, 30], [12, 1, 21]] },
+      { name: '염소자리', symbol: '♑', color: '#607d8b', months: [[12, 22, 31], [1, 1, 19]] }
+    ];
+
+    for (let sign of zodiacSigns) {
+      for (let range of sign.months) {
+        const [rangeMonth, startDay, endDay] = range;
+        if (month === rangeMonth && day >= startDay && day <= endDay) {
+          return sign;
+        }
+      }
+    }
+    return zodiacSigns[0]; // 기본값
+  };
+
   const getThemeNames = () => {
     const themeTranslations = {
       'en-US': {
-        grid: '🔲 Grid', tree: '🌳 Tree Growth', stars: '⭐ Constellation', 
-        flowers: '🌸 Flower Garden', waves: '🌊 Waves', books: '📚 Bookshelf', travel: '🗺️ Journey'
+        flowers: '🌸 Flower Garden', books: '📚 Bookshelf', stars: '⭐ Constellation',
+        waves: '🌊 Waves', tree: '🌳 Tree Growth', travel: '🗺️ Journey', grid: '🔲 Grid'
       },
       'ko-KR': {
-        grid: '🔲 격자', tree: '🌳 나무 성장', stars: '⭐ 별자리', 
-        flowers: '🌸 꽃밭', waves: '🌊 파도', books: '📚 책장', travel: '🗺️ 여행'
+        flowers: '🌸 꽃밭', books: '📚 책장', stars: '⭐ 별자리',
+        waves: '🌊 파도', tree: '🌳 나무 성장', travel: '🗺️ 여행', grid: '🔲 격자'
       },
       'ja-JP': {
-        grid: '🔲 グリッド', tree: '🌳 木の成長', stars: '⭐ 星座', 
-        flowers: '🌸 花園', waves: '🌊 波', books: '📚 本棚', travel: '🗺️ 旅'
+        flowers: '🌸 花園', books: '📚 本棚', stars: '⭐ 星座',
+        waves: '🌊 波', tree: '🌳 木の成長', travel: '🗺️ 旅', grid: '🔲 グリッド'
       },
       'es-ES': {
-        grid: '🔲 Cuadrícula', tree: '🌳 Crecimiento del árbol', stars: '⭐ Constelación', 
-        flowers: '🌸 Jardín de flores', waves: '🌊 Ondas', books: '📚 Estantería', travel: '🗺️ Viaje'
+        flowers: '🌸 Jardín de flores', books: '📚 Estantería', stars: '⭐ Constelación',
+        waves: '🌊 Ondas', tree: '🌳 Crecimiento del árbol', travel: '🗺️ Viaje', grid: '🔲 Cuadrícula'
       }
     };
     
     const descriptions = {
       'en-US': {
-        grid: 'Classic weekly grid format', tree: 'Expanding in rings like tree rings', stars: 'Stars connecting to complete constellations', 
-        flowers: 'Flowers blooming in a garden', waves: 'Smooth curved flow', books: 'Knowledge accumulating in a library', travel: 'Winding life journey'
+        flowers: 'Flowers blooming in a garden', books: 'Knowledge accumulating in a library', stars: 'Your zodiac constellation based on birth date',
+        waves: 'Dynamic ocean waves flow', tree: 'Clear tree rings showing life stages', travel: 'Winding life journey', grid: 'Classic weekly grid format'
       },
       'ko-KR': {
-        grid: '클래식한 주간 격자 형태', tree: '나이테처럼 원형으로 확장', stars: '별들이 연결되어 별자리 완성', 
-        flowers: '꽃들이 피어나는 정원', waves: '부드러운 곡선의 흐름', books: '지식이 쌓여가는 서재', travel: '구불구불한 인생 여정'
+        flowers: '꽃들이 피어나는 정원', books: '지식이 쌓여가는 서재', stars: '생년월일 기반 개인 별자리',
+        waves: '역동적인 바다 파도', tree: '인생 단계별 명확한 나이테', travel: '구불구불한 인생 여정', grid: '클래식한 주간 격자 형태'
       },
       'ja-JP': {
-        grid: 'クラシックな週間グリッド形式', tree: '年輪のように円形に拡張', stars: '星が繋がって星座を完成', 
-        flowers: '庭に花が咲く', waves: '滑らかな曲線の流れ', books: '図書館で知識が蓄積', travel: '曲がりくねった人生の旅'
+        flowers: '庭に花が咲く', books: '図書館で知識が蓄積', stars: '生年月日に基づく個人の星座',
+        waves: 'ダイナミックな海の波', tree: '人生の段階を示す明確な年輪', travel: '曲がりくねった人生の旅', grid: 'クラシックな週間グリッド形式'
       },
       'es-ES': {
-        grid: 'Formato clásico de cuadrícula semanal', tree: 'Expandiéndose en anillos como los de un árbol', stars: 'Estrellas conectándose para completar constelaciones', 
-        flowers: 'Flores floreciendo en un jardín', waves: 'Flujo curvo suave', books: 'Conocimiento acumulándose en una biblioteca', travel: 'Viaje serpenteante de la vida'
+        flowers: 'Flores floreciendo en un jardín', books: 'Conocimiento acumulándose en una biblioteca', stars: 'Tu constelación zodiacal basada en fecha de nacimiento',
+        waves: 'Flujo dinámico de olas del océano', tree: 'Anillos de árbol claros mostrando etapas de vida', travel: 'Viaje serpenteante de la vida', grid: 'Formato clásico de cuadrícula semanal'
       }
     };
 
     return [
-      { id: 'grid', name: themeTranslations[selectedLanguage].grid, description: descriptions[selectedLanguage].grid },
-      { id: 'tree', name: themeTranslations[selectedLanguage].tree, description: descriptions[selectedLanguage].tree },
-      { id: 'stars', name: themeTranslations[selectedLanguage].stars, description: descriptions[selectedLanguage].stars },
       { id: 'flowers', name: themeTranslations[selectedLanguage].flowers, description: descriptions[selectedLanguage].flowers },
-      { id: 'waves', name: themeTranslations[selectedLanguage].waves, description: descriptions[selectedLanguage].waves },
       { id: 'books', name: themeTranslations[selectedLanguage].books, description: descriptions[selectedLanguage].books },
-      { id: 'travel', name: themeTranslations[selectedLanguage].travel, description: descriptions[selectedLanguage].travel }
+      { id: 'stars', name: themeTranslations[selectedLanguage].stars, description: descriptions[selectedLanguage].stars },
+      { id: 'waves', name: themeTranslations[selectedLanguage].waves, description: descriptions[selectedLanguage].waves },
+      { id: 'tree', name: themeTranslations[selectedLanguage].tree, description: descriptions[selectedLanguage].tree },
+      { id: 'travel', name: themeTranslations[selectedLanguage].travel, description: descriptions[selectedLanguage].travel },
+      { id: 'grid', name: themeTranslations[selectedLanguage].grid, description: descriptions[selectedLanguage].grid }
     ];
   };
 
@@ -210,7 +240,8 @@ export default function WeeksOfLife() {
       heartbeats,
       breaths,
       seasons,
-      birthYear
+      birthYear,
+      birthDate
     };
   };
 
@@ -284,25 +315,41 @@ export default function WeeksOfLife() {
 
   const renderTreeVisualization = () => {
     const rings = [];
-    const maxRings = 15;
-    const completedRings = Math.floor((stats.weeksLived / stats.totalWeeks) * maxRings);
+    const yearsPerRing = Math.max(1, Math.floor(expectedLifespan / 15)); // 15개의 링으로 나누기
+    const totalRings = Math.ceil(expectedLifespan / yearsPerRing);
+    const currentAge = Math.floor(stats.weeksLived / 52);
+    const completedRings = Math.floor(currentAge / yearsPerRing);
     
-    for (let i = 0; i < maxRings; i++) {
+    // 각 링이 몇 살을 나타내는지 표시
+    for (let i = 0; i < totalRings; i++) {
       const isCompleted = i < completedRings;
       const isCurrent = i === completedRings;
-      const radius = 30 + i * 12;
+      const ringAge = (i + 1) * yearsPerRing;
+      const radius = 30 + i * 15;
+      
       rings.push(
-        <circle
-          key={i}
-          cx="200"
-          cy="200"
-          r={radius}
-          fill="none"
-          stroke={isCompleted ? "#10b981" : isCurrent ? "#3b82f6" : "#e5e7eb"}
-          strokeWidth={isCompleted ? "4" : isCurrent ? "3" : "1"}
-          opacity={isCompleted ? 0.8 : isCurrent ? 1 : 0.3}
-          style={isCurrent ? {animation: 'pulse 2s infinite'} : {}}
-        />
+        <g key={i}>
+          <circle
+            cx="200"
+            cy="200"
+            r={radius}
+            fill="none"
+            stroke={isCompleted ? "#10b981" : isCurrent ? "#3b82f6" : "#e5e7eb"}
+            strokeWidth={isCompleted ? "6" : isCurrent ? "4" : "2"}
+            opacity={isCompleted ? 0.9 : isCurrent ? 1 : 0.4}
+            style={isCurrent ? {animation: 'pulse 2s infinite'} : {}}
+          />
+          {/* 나이 표시 */}
+          <text
+            x={200 + radius * 0.7}
+            y={200 - radius * 0.7}
+            fontSize="10"
+            fill={isCompleted ? "#10b981" : isCurrent ? "#3b82f6" : "#9ca3af"}
+            fontWeight="bold"
+          >
+            {ringAge}세
+          </text>
+        </g>
       );
     }
     
@@ -310,23 +357,53 @@ export default function WeeksOfLife() {
       <div style={{ display: 'flex', justifyContent: 'center' }}>
         <svg width="400" height="400" style={{ backgroundColor: '#f0fdf4', borderRadius: '8px' }}>
           {rings}
-          <rect x="195" y="200" width="10" height="60" fill="#8b5cf6" />
-          <circle cx="200" cy="190" r="20" fill="#22c55e" opacity="0.8" />
+          {/* 나무 줄기 */}
+          <rect x="195" y="200" width="10" height="80" fill="#8b5cf6" />
+          {/* 나무 꼭대기 */}
+          <circle cx="200" cy="180" r="25" fill="#22c55e" opacity="0.8" />
+          {/* 중앙 현재 나이 표시 */}
+          <text x="200" y="205" textAnchor="middle" fontSize="14" fill="#1f2937" fontWeight="bold">
+            {currentAge}세
+          </text>
         </svg>
       </div>
     );
   };
 
   const renderStarsVisualization = () => {
+    const zodiac = getZodiacSign(stats.birthDate);
     const stars = [];
-    const totalStars = 50;
+    const totalStars = 88; // 실제 별자리의 별 개수에 가깝게
     const completedStars = Math.floor((stats.weeksLived / stats.totalWeeks) * totalStars);
     
+    // 별자리 패턴을 실제 별자리 모양에 가깝게 배치
+    const constellationPatterns = {
+      '♈': [  // 양자리 - V자 모양
+        [150, 100], [180, 80], [200, 100], [220, 80], [250, 100]
+      ],
+      '♉': [  // 황소자리 - 소의 얼굴 모양
+        [120, 120], [150, 100], [200, 90], [250, 100], [280, 120]
+      ],
+      // 기본 원형 패턴
+      default: []
+    };
+    
+    const pattern = constellationPatterns[zodiac.symbol] || [];
+    
     for (let i = 0; i < totalStars; i++) {
-      const angle = (i / totalStars) * 4 * Math.PI;
-      const radius = 50 + (i * 3);
-      const x = 200 + Math.cos(angle) * radius;
-      const y = 200 + Math.sin(angle) * radius;
+      let x, y;
+      
+      if (i < pattern.length) {
+        // 주요 별자리 별들
+        [x, y] = pattern[i];
+      } else {
+        // 나머지 별들은 원형으로 배치
+        const angle = (i / totalStars) * 6 * Math.PI;
+        const radius = 50 + (i % 8) * 25;
+        x = 200 + Math.cos(angle) * radius;
+        y = 200 + Math.sin(angle) * radius;
+      }
+      
       const isCompleted = i < completedStars;
       const isCurrent = i === completedStars;
       
@@ -335,29 +412,26 @@ export default function WeeksOfLife() {
           key={i}
           cx={x}
           cy={y}
-          r={isCompleted ? "4" : isCurrent ? "5" : "2"}
-          fill={isCompleted ? "#fbbf24" : isCurrent ? "#3b82f6" : "#e5e7eb"}
+          r={isCompleted ? (i < pattern.length ? "6" : "3") : isCurrent ? "5" : "2"}
+          fill={isCompleted ? zodiac.color : isCurrent ? "#3b82f6" : "#e5e7eb"}
           opacity={isCompleted ? 1 : isCurrent ? 1 : 0.3}
           style={isCurrent ? {animation: 'pulse 2s infinite'} : {}}
         />
       );
       
-      if (isCompleted && i > 0) {
-        const prevAngle = ((i-1) / totalStars) * 4 * Math.PI;
-        const prevRadius = 50 + ((i-1) * 3);
-        const prevX = 200 + Math.cos(prevAngle) * prevRadius;
-        const prevY = 200 + Math.sin(prevAngle) * prevRadius;
-        
+      // 주요 별들 연결선
+      if (isCompleted && i < pattern.length - 1) {
+        const [nextX, nextY] = pattern[i + 1];
         stars.push(
           <line
             key={`line-${i}`}
-            x1={prevX}
-            y1={prevY}
-            x2={x}
-            y2={y}
-            stroke="#fbbf24"
-            strokeWidth="1"
-            opacity="0.6"
+            x1={x}
+            y1={y}
+            x2={nextX}
+            y2={nextY}
+            stroke={zodiac.color}
+            strokeWidth="2"
+            opacity="0.8"
           />
         );
       }
@@ -365,8 +439,12 @@ export default function WeeksOfLife() {
     
     return (
       <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <svg width="400" height="400" style={{ backgroundColor: '#eff6ff', borderRadius: '8px' }}>
+        <svg width="400" height="400" style={{ backgroundColor: '#0f172a', borderRadius: '8px' }}>
           {stars}
+          {/* 별자리 이름 표시 */}
+          <text x="200" y="350" textAnchor="middle" fontSize="16" fill={zodiac.color} fontWeight="bold">
+            {zodiac.symbol} {zodiac.name}
+          </text>
         </svg>
       </div>
     );
@@ -422,19 +500,20 @@ export default function WeeksOfLife() {
 
   const renderWavesVisualization = () => {
     const waves = [];
-    const waveCount = 25;
+    const waveCount = 20;
     const completedWaves = Math.floor((stats.weeksLived / stats.totalWeeks) * waveCount);
     
     for (let i = 0; i < waveCount; i++) {
-      const y = 30 + i * 14;
+      const y = 50 + i * 15;
       const isCompleted = i < completedWaves;
       const isCurrent = i === completedWaves;
-      const amplitude = 20;
-      const frequency = 0.03;
+      const amplitude = 25 + Math.sin(i * 0.5) * 10; // 변화하는 진폭
+      const frequency = 0.025 + i * 0.001; // 점진적으로 변하는 주파수
       
       let pathData = `M 20 ${y}`;
-      for (let x = 20; x <= 380; x += 8) {
-        const waveY = y + Math.sin(x * frequency + i * 0.5) * amplitude;
+      for (let x = 20; x <= 380; x += 6) {
+        const waveY = y + Math.sin(x * frequency + i * 0.8) * amplitude + 
+                      Math.cos(x * frequency * 1.5) * (amplitude * 0.3); // 복합 파형
         pathData += ` L ${x} ${waveY}`;
       }
       
@@ -443,8 +522,8 @@ export default function WeeksOfLife() {
           key={i}
           d={pathData}
           fill="none"
-          stroke={isCompleted ? "#06b6d4" : isCurrent ? "#3b82f6" : "#e5e7eb"}
-          strokeWidth={isCompleted ? "3" : isCurrent ? "4" : "1"}
+          stroke={isCompleted ? `hsl(${200 + i * 3}, 80%, ${50 + i}%)` : isCurrent ? "#3b82f6" : "#e5e7eb"}
+          strokeWidth={isCompleted ? "4" : isCurrent ? "5" : "1"}
           opacity={isCompleted ? 0.8 : isCurrent ? 1 : 0.3}
           style={isCurrent ? {animation: 'pulse 2s infinite'} : {}}
         />
@@ -455,6 +534,10 @@ export default function WeeksOfLife() {
       <div style={{ display: 'flex', justifyContent: 'center' }}>
         <svg width="400" height="400" style={{ backgroundColor: '#ecfeff', borderRadius: '8px' }}>
           {waves}
+          {/* 파도 거품 효과 */}
+          <circle cx="350" cy="100" r="3" fill="white" opacity="0.7" />
+          <circle cx="330" cy="150" r="2" fill="white" opacity="0.5" />
+          <circle cx="370" cy="200" r="4" fill="white" opacity="0.6" />
         </svg>
       </div>
     );
@@ -658,7 +741,7 @@ export default function WeeksOfLife() {
     setBirthdate('');
     setName('');
     setExpectedLifespan(80);
-    setSelectedTheme('grid');
+    setSelectedTheme('flowers');
     setStats(null);
     setStep(1);
   };
@@ -674,10 +757,10 @@ export default function WeeksOfLife() {
 
   const getLifespanText = () => {
     switch(selectedLanguage) {
-      case 'en-US': return { label: 'Expected Lifespan (Age)', range: '60 - 120 years range', unit: 'years' };
-      case 'ja-JP': return { label: '予想寿命（年齢）', range: '60歳〜120歳の範囲', unit: '歳' };
-      case 'es-ES': return { label: 'Esperanza de vida (Edad)', range: 'Rango de 60 - 120 años', unit: 'años' };
-      default: return { label: '예상 수명 (나이)', range: '60세 ~ 120세 범위에서 설정 가능', unit: '세' };
+      case 'en-US': return { label: 'Expected Lifespan (Age)', range: '0 - 150 years range', unit: 'years' };
+      case 'ja-JP': return { label: '予想寿命（年齢）', range: '0歳〜150歳の範囲', unit: '歳' };
+      case 'es-ES': return { label: 'Esperanza de vida (Edad)', range: 'Rango de 0 - 150 años', unit: 'años' };
+      default: return { label: '예상 수명 (나이)', range: '0세 ~ 150세 범위에서 설정 가능', unit: '세' };
     }
   };
 
@@ -737,8 +820,8 @@ export default function WeeksOfLife() {
                 <div className="slider-wrapper">
                   <input
                     type="range"
-                    min="60"
-                    max="120"
+                    min="0"
+                    max="150"
                     value={expectedLifespan}
                     onChange={(e) => setExpectedLifespan(parseInt(e.target.value))}
                     className="slider"
